@@ -4,7 +4,10 @@
 using namespace std;
 
 //mutex m;
-
+/*
+todo 总结 在get函数获取实例时 函数都必须为static，因为单例模式类构造函数为私有，所以只能将get设为static然后
+todo 通过类名访问get函数获得实例
+*/
 
 /*************************懒汉版*************************************/
 class Singleton{
