@@ -109,11 +109,13 @@ public:
 			reServe(theCapacity * 2 + 1);
 		}
 		theSize = 0;//若是之前assign了少于num的值被覆盖，多于num的值还在，但是theSize使我们访问不到，就好像不在了一样。
-		for (int i=0; i < num; i++)
-		{
-			data[i] = value;
-			theSize++;
-		}
+		memset(data, value, sizeof(T) * num);
+		theSize = num;
+		// for (int i=0; i < num; i++)
+		// {
+		// 	data[i] = value;
+		// 	theSize++;
+		// }
 	}
 
     T* get_address()
@@ -163,6 +165,13 @@ int main()
 {
 	vec<int> v1;
 	cout <<"size:"<< v1.size() << endl;
+	v1.assign(10, 1);
+	cout <<"size:"<< v1.size() << endl;
+	for (int i = 0; i < v1.size(); i++)
+	{
+		cout << v1[i] << " ";
+	}
+	cout<<endl;
 	v1.push_back(1);
 	v1.push_back(2);
 	v1.push_back(3);
