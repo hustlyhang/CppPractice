@@ -49,6 +49,7 @@
         "stack": "cpp",
         "queue": "cpp",
         "xtree": "cpp",
-        "deque": "cpp"
+        "deque": "cpp",
+        "string": "cpp"
     }
 }
