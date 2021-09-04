@@ -77,7 +77,7 @@
 
 - [lambda](https://zhuanlan.zhihu.com/p/150554945)
     - 编译器会把我们写的lambda表达式翻译成一个类，并重载 operator()来实现。比如我们写一个lambda表达式为[补充](https://zhuanlan.zhihu.com/p/384314474)
-    ```
+    ```C++
     auto plus = [] (int a, int b) -> int { return a + b; }
     int c = plus(1, 2);
     
@@ -96,7 +96,7 @@
     ```
     调用的时候编译器会生成一个Lambda的对象，并调用opeartor ()函数。（备注：这里的编译的翻译结果并不和真正的结果完全一致，只是把最主要的部分体现出来，其他的像类到函数指针的转换函数均省略）
     - 值捕获：值捕获时，编译器会把捕获到的值作为类的成员变量，并且变量是以值的方式传递的。需要注意的时，如果所有的参数都是值捕获的方式，那么生成的operator()函数是const函数的，是无法修改捕获的值的，哪怕这个修改不会改变lambda表达式外部的变量，如果想要在函数内修改捕获的值，需要加上关键字 mutable。向下面这样的形式。
-    ```
+    ```C++
     int x = 1; int y = 2;
     auto plus = [=] (int a, int b) mutable -> int { x++; return x + y + a + b; };
     int c = plus(1, 2);
@@ -142,6 +142,18 @@
         - 全文索引
         - 普通索引
 
+- [输入一条查询语句后](https://www.infoq.cn/article/PKzT75BPcryCYJ_VuWrR)
+
+    - MySQL：分为Server层和存储引擎层；Server层包括连接器、查询缓存、分析器、优化器、执行器等
+    - 连接器：连接器负责跟客户端建立连接、获取权限、维持和管理连接。
+    - 查询缓存：MySQL 拿到一个查询请求后，会先到查询缓存看看，之前是不是执行过这条语句。但是大多数情况下我会建议你不要使用查询缓存，为什么呢？因为查询缓存往往弊大于利。
+    - 分析器：首先，MySQL 需要知道你要做什么，因此需要对 SQL 语句做解析。
+        - “词法分析”：MySQL 需要识别出里面的字符串分别是什么，代表什么。
+        - “语法分析”：根据词法分析的结果，语法分析器会根据语法规则，判断你输入的这个 SQL 语句是否满足 MySQL 语法。
+
+    - 优化器：优化器是在表里面有多个索引的时候，决定使用哪个索引；或者在一个语句有多表关联（join）的时候，决定各个表的连接顺序。
+    - 执行器：开始执行的时候，要先判断一下你对这个表 T 有没有执行查询的权限，如果没有，就会返回没有权限的错误
+
 # 操作系统
 
 - [内存地址编址与寻址原理剖析](https://blog.csdn.net/u014689845/article/details/102752718)
@@ -154,7 +166,28 @@
         - 层次化分页：
 
 - [进程间通信]()
-    - 
+    - 管道：一个管道只能实现有亲缘关系的两个进程单向通信，如果要实现双向通信，需要两个管道或者使用[sockpair](https://blog.csdn.net/weixin_40039738/article/details/81095013)解决
+    - 命名管道（FIFO）：FIFO不同于管道之处在于它提供一个路径名与之关联，以FIFO的文件形式存储文件系统中。命名管道是一个设备文件，因此即使进程与创建FIFO的进程不存在亲缘关系，只要可以访问该路径，就能够通过FIFO相互通信。```int mkfifo(const char *pathname, mode_t mode);```
+        - 命名管道是一个存在于硬盘上的文件，而管道是存在于内存中的特殊文件。所以当使用命名管道的时候必须先open将其打开。
+        - 命名管道可以用于任何两个进程之间的通信，不管这两个进程是不是父子进程，也不管这两个进程之间有没有关系。
+
+    - 消息队列：一是通信不及时，二是附件也有大小限制
+    - 信号量：信号量的本质是一种数据操作锁，用来负责数据操作过程中的互斥，同步等功能。
+        ```C++
+        int semget(key_t key, int nsems, int semflg);
+        key = key_t ftok(const char *pathname, int proj_id);
+        int semop(int semid, struct sembuf *sops, unsigned nsops);
+        int semtimedop(int semid, struct sembuf *sops, unsigned nsops,struct timespec *timeout);
+        int semctl(int semid,int semnum,int cmd,...);
+        ```
+        nsems:这个参数表示你要创建的信号量集合中的信号量的个数。信号量只能以集合的形式创建。
+    - 共享内存(shm)
+    - 信号
+    - Socket
+
+
+
+
 # 计算机网路
 
 - [TCP流量控制、拥塞控制](https://blog.csdn.net/gengzhikui1992/article/details/89141184)
